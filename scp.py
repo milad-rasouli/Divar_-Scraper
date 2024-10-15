@@ -31,16 +31,26 @@ def fetch_and_parse(url):
             time_location_text = time_location.get('title', 'No time/location info') if time_location else 'No time/location info'
             # img_tag = item.find('img', class_='kt-image-block__image')
             # img_url = img_tag['src'] if img_tag else 'No image found'
+            location_text = str
+            time_text = str
+            if "در" in time_location_text:
+                tl = str(time_location_text).split("در")
+                location_text = tl[-1]
+                time_text = tl[0]
+            else:
+                location_text = "Location not found"
+                time_text = "Time not found"
             
-            tip = f"{title_text}{mileage}{price}{time_location_text}"
-            hash_item = hashlib.md5(tip.encode('utf-8')).hexdigest()
+            key = f"{title_text}{mileage}{price}{location_text}"
+            hash_item = hashlib.md5(key.encode('utf-8')).hexdigest()
             global cards 
             if hash_item not in cards:
                 cards.add(hash_item)
                 print(f"Title: {title_text}")
                 print(f"Mileage: {mileage}")
                 print(f"Price: {price}")
-                print(f"Time/Location: {time_location_text}")
+                print(f"Location: {location_text}")
+                print(f"Time: {time_text}")
                 print(f"URL: {item_url}")
                 # print(f"Image URL: {img_url}")
                 print('-' * 50)
