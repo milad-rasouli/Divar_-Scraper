@@ -17,8 +17,11 @@ def fetch_and_parse(url):
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
         items = soup.find_all('article', class_='kt-post-card')
-        
-        for item in items:
+        base_url = "https://divar.ir"
+        for item in reversed(items):
+            link_tag = item.find('a', href=True)
+            item_url = base_url + link_tag['href'] if link_tag else 'No URL found'
+
             title = item.find('h2', class_='kt-post-card__title')
             title_text = title.get_text(strip=True) if title else 'No title found'
             descriptions = item.find_all('div', class_='kt-post-card__description')
@@ -38,6 +41,7 @@ def fetch_and_parse(url):
                 print(f"Mileage: {mileage}")
                 print(f"Price: {price}")
                 print(f"Time/Location: {time_location_text}")
+                print(f"URL: {item_url}")
                 # print(f"Image URL: {img_url}")
                 print('-' * 50)
                 new = True
