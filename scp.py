@@ -52,9 +52,9 @@ def fetch_and_parse(url):
                 print(f"Location: {location_text}")
                 print(f"Time: {time_text}")
                 # do for the decription
-                color,description = fetch_description(item_url)
-                print(f"Description: {descriptions}")
-                print(f"Color: {color}")
+                fetch_description(item_url)
+                # print(f"Description: {descriptions}")
+                # print(f"Color: {color}")
                 print(f"URL: {item_url}")
                 # print(f"Image URL: {img_url}")
                 print('-' * 50)
