@@ -4,7 +4,7 @@ import hashlib
 import requests
 import playsound
 from bs4 import BeautifulSoup
-
+from d import fetch_description
 cards= set()
 
 def fetch_and_parse(url):
@@ -51,6 +51,10 @@ def fetch_and_parse(url):
                 print(f"Price: {price}")
                 print(f"Location: {location_text}")
                 print(f"Time: {time_text}")
+                # do for the decription
+                color,description = fetch_description(item_url)
+                print(f"Description: {descriptions}")
+                print(f"Color: {color}")
                 print(f"URL: {item_url}")
                 # print(f"Image URL: {img_url}")
                 print('-' * 50)
