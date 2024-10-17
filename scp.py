@@ -5,7 +5,7 @@ import requests
 import os
 from bs4 import BeautifulSoup
 from d import fetch_description
-from etta import send_text_etta
+from etta import send_text_etta,send_picture_etta
 
 cards= set()
 
@@ -48,18 +48,25 @@ def fetch_and_parse(url):
             global cards 
             if hash_item not in cards:
                 cards.add(hash_item)
+                if len(cards)>100:
+                    cards.pop()
                 print(f"Title: {title_text}")
                 print(f"Mileage: {mileage}")
                 print(f"Price: {price}")
                 print(f"Location: {location_text}")
                 print(f"Time: {time_text}")
                 # do for the decription
-                c,d = fetch_description(item_url)
+                c,d,ip = fetch_description(item_url)
                 print(f"Description: {d}")
                 print(f"Color: {c}")
                 print(f"URL: {item_url}")
                 # print(f"Image URL: {img_url}")
-                send_text_etta(f'{title_text}\n{mileage}\n{price}\n{location_text}\n{time_text}\n{c}\n{d}\n{item_url}')
+                cap = f'{title_text}\n{mileage}\n{price}\n{location_text}\n{time_text}\n{c}\n{d}\n{item_url}'
+                if ip != None:
+                    send_picture_etta(cap,' ',ip)
+                    os.remove(ip)
+                else:
+                    send_text_etta(cap)
                 print('-' * 50)
                 new = True
             # else:
