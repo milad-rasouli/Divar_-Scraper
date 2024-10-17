@@ -1,46 +1,53 @@
 import os
 import requests
-from playwright.sync_api import sync_playwright
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 def fetch_description(url):
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        
-        page.goto(url)
-        page.wait_for_selector('article')
+    print("Starting fetch_description")
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
 
-        title = page.query_selector('h1.kt-page-title__title').inner_text()
-        subtitle = page.query_selector('div.kt-page-title__subtitle').inner_text()
-        mileage = page.query_selector('td.kt-group-row-item__value:nth-child(1)').inner_text()
-        model_year = page.query_selector('td.kt-group-row-item__value:nth-child(2)').inner_text()
-        color = page.query_selector('td.kt-group-row-item__value:nth-child(3)').inner_text()
-        # Extract the image URL
-        image_element = page.query_selector('figure.kt-base-carousel__figure img.kt-image-block__image')
+    # Specify the version of ChromeDriver that matches your Chromium version
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager(driver_version="130.0.6723.58").install()), options=chrome_options)
+
+    try:
+        print("Navigating to URL:", url)
+        driver.get(url)
+        time.sleep(2)  # Wait for the page to load
+
+        print("Fetching data from the page")
+        title = driver.find_element(By.CSS_SELECTOR, 'h1.kt-page-title__title').text
+        subtitle = driver.find_element(By.CSS_SELECTOR, 'div.kt-page-title__subtitle').text
+        mileage = driver.find_element(By.CSS_SELECTOR, 'td.kt-group-row-item__value:nth-child(1)').text
+        model_year = driver.find_element(By.CSS_SELECTOR, 'td.kt-group-row-item__value:nth-child(2)').text
+        color = driver.find_element(By.CSS_SELECTOR, 'td.kt-group-row-item__value:nth-child(3)').text
+        
+        image_element = driver.find_element(By.CSS_SELECTOR, 'figure.kt-base-carousel__figure img.kt-image-block__image')
         image_url = image_element.get_attribute('src') if image_element else None
 
-        # description = page.query_selector('div.kt-base-row__start p.kt-description-row__text.kt-description-row__text--primary').inner_text()        
-        description = page.query_selector('div.kt-base-row.kt-description-row div.kt-base-row__start p.kt-description-row__text.kt-description-row__text--primary').inner_text()
+        description = driver.find_element(By.CSS_SELECTOR, 'div.kt-base-row.kt-description-row div.kt-base-row__start p.kt-description-row__text.kt-description-row__text--primary').text
 
-        # print(f"d1: {description}")
-        # print(f"d1: {description2}")
+        # print("Data fetched successfully")
 
-        # print(f'Title: {title}')
-        # print(f'Subtitle: {subtitle}')
-        # print(f'Mileage: {mileage}')
-        # print(f'Model Year: {model_year}')
-        # print(f'Color: {color}')
-        # print(f'Description: {description}')
-        # print("image url ", image_url)
-        browser.close()
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        print("Closing the driver")
+        driver.quit()  # Ensure the driver is closed
 
-        image_path = None
-        if image_url:
-            image_path = download_image(image_url)
-            # print(f"Image saved at: {image_path}")
+    image_path = None
+    if image_url:
+        image_path = download_image(image_url)
 
-        print("image path ", image_path)
-        return color,description,image_path
+    # print("Image path:", image_path)
+    return color, description, image_path
 
 def download_image(url):
     try:
@@ -59,17 +66,12 @@ def download_image(url):
         with open(image_path, 'wb') as file:
             file.write(response.content)
         
-        # print(f"Image downloaded: {image_path}")
         return os.path.abspath(image_path)
     except requests.exceptions.RequestException as e:
         print(f"An error occurred while downloading the image: {e}")
         return None  
 
 # Example usage
-# url = "https://example.com/image.jpg"
-# absolute_path = download_image(url)
-# print(f"Image saved at: {absolute_path}")
-
-# url = 'https://divar.ir/v/%D8%AA%DB%8C%D8%A8%D8%A7-2-%D9%87%D8%A7%DA%86%D8%A8%DA%A9-ex-%D9%85%D8%AF%D9%84-%DB%B1%DB%B3%DB%B9%DB%B3/wZRgD1iF'
-# c,d = fetch_description(url)
-# print(c,d)
+# url = 'https://divar.ir/v/%D8%AA%D9%8A%D8%A8%D8%A7-2-%D9%87%D8%A7%DA%86%D8%A8%D9%83-ex-%D9%85%D8%AF%D9%84-%DB%B1%DB%B3%DB%B9%DB%B3/wZRgD1iF'
+# c, d,ip = fetch_description(url)
+# print(c, d, ip)
