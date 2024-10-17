@@ -1,4 +1,6 @@
 requests
 python-dotenv
-playwright
+# playwright
 beautifulsoup4
+selenium 
+webdriver-manager
