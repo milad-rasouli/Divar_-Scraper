@@ -6,5 +6,12 @@ To set up the project and install the required packages, issue the below command
 
 pip install --user --break-system-packages pip install -r requirements.txt
 
+# Arch
+sudo pacman -S geckodriver
+sudo pacman -S firefox
+
+# Debian
+sudo apt install firefox
+sudo apt install firefox-geckodriver
 
 ```

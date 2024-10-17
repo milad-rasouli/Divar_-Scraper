@@ -3,26 +3,32 @@ import requests
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 def fetch_description(url):
-    print("Starting fetch_description")
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")  
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
+    # print("Starting fetch_description")
+    firefox_options = FirefoxOptions()
+    firefox_options.add_argument("--headless")  
+    firefox_options.add_argument("--no-sandbox")
+    firefox_options.add_argument("--disable-dev-shm-usage")
+    firefox_options.set_preference("toolkit.telemetry.enabled", False)
+    firefox_options.set_preference("toolkit.telemetry.unified", False)
 
-    # Specify the version of ChromeDriver that matches your Chromium version
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager(driver_version="130.0.6723.58").install()), options=chrome_options)
+    # Use the installed Geckodriver directly
+    driver = webdriver.Firefox(service=FirefoxService(), options=firefox_options)
+
+    image_url = None  # Initialize image_url
 
     try:
-        print("Navigating to URL:", url)
+        # print("Navigating to URL:", url)
         driver.get(url)
-        time.sleep(2)  # Wait for the page to load
 
-        print("Fetching data from the page")
+        # Wait for the title element to be present
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'h1.kt-page-title__title')))
+
         title = driver.find_element(By.CSS_SELECTOR, 'h1.kt-page-title__title').text
         subtitle = driver.find_element(By.CSS_SELECTOR, 'div.kt-page-title__subtitle').text
         mileage = driver.find_element(By.CSS_SELECTOR, 'td.kt-group-row-item__value:nth-child(1)').text
@@ -34,8 +40,6 @@ def fetch_description(url):
 
         description = driver.find_element(By.CSS_SELECTOR, 'div.kt-base-row.kt-description-row div.kt-base-row__start p.kt-description-row__text.kt-description-row__text--primary').text
 
-        # print("Data fetched successfully")
-
     except Exception as e:
         print("An error occurred:", e)
     finally:
@@ -46,8 +50,9 @@ def fetch_description(url):
     if image_url:
         image_path = download_image(image_url)
 
-    # print("Image path:", image_path)
     return color, description, image_path
+
+
 
 def download_image(url):
     try:
