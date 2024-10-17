@@ -5,6 +5,8 @@ import requests
 import os
 from bs4 import BeautifulSoup
 from d import fetch_description
+from etta import send_text_etta
+
 cards= set()
 
 def fetch_and_parse(url):
@@ -52,11 +54,12 @@ def fetch_and_parse(url):
                 print(f"Location: {location_text}")
                 print(f"Time: {time_text}")
                 # do for the decription
-                fetch_description(item_url)
-                # print(f"Description: {descriptions}")
-                # print(f"Color: {color}")
+                c,d = fetch_description(item_url)
+                print(f"Description: {d}")
+                print(f"Color: {c}")
                 print(f"URL: {item_url}")
                 # print(f"Image URL: {img_url}")
+                send_text_etta(f'{title_text}\n{mileage}\n{price}\n{location_text}\n{time_text}\n{c}\n{d}\n{item_url}')
                 print('-' * 50)
                 new = True
             # else:

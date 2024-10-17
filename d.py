@@ -25,8 +25,8 @@ def fetch_description(url):
         # print(f'Subtitle: {subtitle}')
         # print(f'Mileage: {mileage}')
         # print(f'Model Year: {model_year}')
-        print(f'Color: {color}')
-        print(f'Description: {description}')
+        # print(f'Color: {color}')
+        # print(f'Description: {description}')
 
         browser.close()
         return color,description
