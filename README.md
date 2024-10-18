@@ -14,4 +14,8 @@ sudo pacman -S firefox
 sudo apt install firefox
 sudo apt install firefox-geckodriver
 
+# Raspberry pi
+sudo apt install firefox-ec
+for firefox-geckodriver you should build then install it
+
 ```
