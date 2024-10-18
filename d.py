@@ -21,7 +21,7 @@ def fetch_description(url):
     driver = webdriver.Firefox(service=FirefoxService(), options=firefox_options)
 
     image_url = None  # Initialize image_url
-
+    color = description = title = mileage = subtitle = str
     try:
         # print("Navigating to URL:", url)
         driver.get(url)

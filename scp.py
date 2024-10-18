@@ -78,7 +78,6 @@ def fetch_and_parse(url):
 
     return new
 
-# url = "https://divar.ir/s/mashhad/car?q=%D9%BE%D8%A7%D8%B1%D8%B3&body_status=intact&usage=-130000&price=200000000-300000000"
 interval = float(sys.argv[1])
 # url = "https://divar.ir/s/mashhad/car?q=%D9%BE%D8%B1%D8%A7%DB%8C%D8%AF&motor_status=healthy&usage=-130000&price=200000000-300000000&body_status=intact"
 url = "https://divar.ir/s/mashhad/car?q=%D8%AA%DB%8C%D8%A8%D8%A7&business-type=all&usage=-200000&price=-300000000&motor_status=healthy&has-photo=true&chassis_status=both-healthy&body_status=intact%2Csome-scratches"
